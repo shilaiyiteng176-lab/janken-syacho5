@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>じゃんけん社長 完全版 — 運と戦略で企業帝国を築け！</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Black&family=Noto+Sans+JP:wght@400;700;900&display=swap');
+
+:root {
+  --navy:   #0D1B3E;
+  --navy2:  #162450;
+  --gold:   #F5C518;
+  --gold2:  #E8A800;
+  --orange: #FF6B00;
+  --orange2:#E55A00;
+  --cream:  #FFF8E7;
+  --green:  #2ECC71;
+  --red:    #E74C3C;
+  --blue:   #3498DB;
+  --white:  #FFFFFF;
+  --text:   #1A1A2E;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  overflow-x: hidden;
+  image-rendering: pixelated;
+}
+
+/* ── PIXEL DOT DIVIDER ── */
+.dot-divider {
+  width: 100%;
+  height: 8px;
+  background-image: repeating-linear-gradient(90deg, var(--gold) 0, var(--gold) 8px, transparent 8px, transparent 16px);
+  margin: 0;
+  flex-shrink: 0;
+}
+.dot-divider.orange {
+  background-image: repeating-linear-gradient(90deg, var(--orange) 0, var(--orange) 8px, transparent 8px, transparent 16px);
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  background: linear-gradient(170deg, #0D1B3E 0%, #1B3A7A 45%, #0D2B60 100%);
+  padding: 40px 20px 60px;
+  text-align: center;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(245,197,24,0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,107,0,0.12) 0%, transparent 50%);
+  pointer-events: none;
+}
+/* pixel grid overlay */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  background: rgba(245,197,24,0.12);
+  border: 1.5px solid var(--gold);
+  padding: 5px 16px;
+  border-radius: 2px;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: clamp(52px, 16vw, 88px);
+  line-height: 0.95;
+  color: var(--white);
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+}
+.hero-title span {
+  color: var(--gold);
+  display: block;
+  -webkit-text-stroke: 3px var(--gold2);
+  paint-order: stroke fill;
+  filter: drop-shadow(0 0 20px rgba(245,197,24,0.5));
+}
+
+.hero-badge {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  font-weight: 900;
+  font-size: 13px;
+  padding: 4px 14px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+  letter-spacing: 0.1em;
+  box-shadow: 3px 3px 0 #8B0000;
+}
+
+.hero-sub {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: clamp(18px, 5vw, 24px);
+  color: var(--cream);
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+.hero-sub em {
+  color: var(--gold);
+  font-style: normal;
+}
+
+/* JK animation in hero */
+.jk-battle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.jk-hand {
+  font-size: 52px;
+  animation: jk-float 2s ease-in-out infinite;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.5));
+}
+.jk-hand:nth-child(3) { animation-delay: 0.3s; }
+.jk-vs {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: 22px;
+  color: var(--gold);
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+@keyframes jk-float {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(-10px) rotate(8deg); }
+}
+
+.hero-cta-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-store {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-weight: 900;
+  font-size: 15px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+  width: 240px;
+  justify-content: center;
+}
+.btn-store:active { transform: translateY(2px); }
+.btn-ios {
+  background: var(--white);
+  color: var(--text);
+  box-shadow: 0 4px 0 #999;
+}
+.btn-ios:active { box-shadow: 0 2px 0 #999; }
+.btn-android {
+  background: #01875F;
+  color: #fff;
+  box-shadow: 0 4px 0 #014D36;
+}
+.btn-android:active { box-shadow: 0 2px 0 #014D36; }
+.btn-store svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+.hero-note {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 8px;
+}
+
+/* ── CONCEPT STRIP ── */
+.concept-strip {
+  background: var(--gold);
+  padding: 14px 20px;
+  text-align: center;
+}
+.concept-strip p {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: clamp(13px, 3.5vw, 18px);
+  color: var(--navy);
+  line-height: 1.6;
+}
+.concept-strip strong { color: var(--orange2); }
+
+/* ── SECTION COMMON ── */
+section { padding: 56px 20px; }
+
+.section-eyebrow {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+.section-eyebrow::before, .section-eyebrow::after {
+  content: '';
+  flex: 1;
+  max-width: 40px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.section-title {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: clamp(24px, 7vw, 36px);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 32px;
+  color: var(--white);
+}
+.section-title em {
+  color: var(--gold);
+  font-style: normal;
+}
+
+/* ── FEATURES ── */
+.features { background: var(--navy2); }
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 18px 14px;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.feature-card:hover {
+  border-color: var(--gold);
+  background: rgba(245,197,24,0.06);
+}
+.feature-card .icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  display: block;
+}
+.feature-card h3 {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.feature-card p {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+}
+
+/* ── HOW TO PLAY ── */
+.howto { background: var(--navy); }
+
+.flow-steps {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.flow-step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  position: relative;
+}
+.flow-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  top: 52px;
+  bottom: -16px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+}
+.step-num {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: var(--gold);
+  color: var(--navy);
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 3px 3px 0 var(--gold2);
+}
+.step-body {
+  padding: 10px 0 28px;
+}
+.step-body h3 {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: 16px;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.step-body p {
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+}
+
+/* ── IDEOLOGY ── */
+.ideology { background: var(--navy2); }
+
+.ideology-grid {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ideology-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+  border-left: 4px solid var(--gold);
+  transition: background 0.2s;
+}
+.ideology-card:hover { background: rgba(245,197,24,0.07); }
+.ideology-card .icon { font-size: 28px; flex-shrink: 0; }
+.ideology-card .name {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 3px;
+}
+.ideology-card .effect { font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+/* ── MARKET & PROJECTS ── */
+.market-sec { background: var(--navy); }
+
+.market-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 28px;
+  max-width: 460px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.market-tag {
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.market-tag.hot { border-color: var(--orange); color: var(--orange); }
+
+.project-cards {
+  max-width: 440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.project-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+.project-item .pname {
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.project-item .stats {
+  text-align: right;
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.6;
+}
+.project-item .profit { font-weight: 900; color: var(--green); font-size: 14px; }
+.badge-risk {
+  font-size: 9px;
+  font-weight: 900;
+  padding: 2px 7px;
+  border-radius: 99px;
+  letter-spacing: 0.05em;
+}
+.risk-low { background: #D1FAE5; color: #065F46; }
+.risk-mid { background: #FEF3C7; color: #92400E; }
+.risk-high { background: #FEE2E2; color: #7F1D1D; }
+.risk-max { background: #EDE9FE; color: #4C1D95; }
+
+/* ── WIN CHANCE ── */
+.winchance-sec { background: var(--navy2); }
+
+.wc-diagram {
+  max-width: 420px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 20px;
+}
+.wc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.wc-row:last-child { margin-bottom: 0; }
+.wc-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  width: 90px;
+  flex-shrink: 0;
+}
+.wc-bar-wrap {
+  flex: 1;
+  height: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.wc-bar {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--green), var(--gold));
+}
+.wc-pct {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--gold);
+  width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.wc-arrow {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--gold);
+  padding: 8px 0;
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+}
+
+/* ── STAFF ── */
+.staff-sec { background: var(--navy); }
+
+.rarity-grid {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.rarity-tag {
+  font-size: 12px;
+  font-weight: 900;
+  padding: 5px 14px;
+  border-radius: 4px;
+  border: 2px solid;
+}
+.rarity-N  { border-color: #9CA3AF; color: #9CA3AF; }
+.rarity-R  { border-color: #60A5FA; color: #60A5FA; }
+.rarity-SR { border-color: #A78BFA; color: #A78BFA; }
+.rarity-SSR{ border-color: var(--gold); color: var(--gold); background: rgba(245,197,24,0.08); }
+.rarity-UR { border-color: #F87171; color: #F87171; }
+
+.staff-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.staff-scroll::-webkit-scrollbar { display: none; }
+.staff-mini {
+  flex-shrink: 0;
+  width: 120px;
+  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.staff-mini:hover { border-color: var(--gold); }
+.staff-mini .avatar { font-size: 32px; margin-bottom: 6px; }
+.staff-mini .sname { font-size: 10px; font-weight: 700; margin-bottom: 4px; color: var(--cream); }
+.staff-mini .srole { font-size: 9px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+.staff-mini .skill-tag { font-size: 8px; font-weight: 700; background: #EEF2FF; color: #4338CA; border-radius: 99px; padding: 2px 6px; display: inline-block; }
+
+/* ── EVENTS ── */
+.events-sec { background: var(--navy2); }
+
+.event-list {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.event-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  border-left: 4px solid var(--orange);
+}
+.event-item .eicon { font-size: 22px; flex-shrink: 0; }
+.event-item .ename { font-size: 12px; font-weight: 700; color: var(--orange); margin-bottom: 3px; }
+.event-item .edesc { font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+
+/* ── OFFICE EVOLUTION ── */
+.office-sec { background: var(--navy); }
+
+.office-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.office-flow::-webkit-scrollbar { display: none; }
+.office-stage {
+  flex-shrink: 0;
+  text-align: center;
+  width: 72px;
+}
+.office-stage .oicon {
+  width: 52px;
+  height: 52px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 5px;
+  transition: border-color 0.2s;
+}
+.office-stage:hover .oicon { border-color: var(--gold); }
+.office-stage .olabel { font-size: 9px; color: rgba(255,255,255,0.5); line-height: 1.3; }
+.office-arrow { font-size: 16px; color: var(--gold); opacity: 0.6; flex-shrink: 0; }
+
+/* ── STATS ── */
+.stats-sec {
+  background: linear-gradient(135deg, #1B3A7A 0%, var(--navy) 100%);
+  padding: 48px 20px;
+}
+.stats-grid {
+  max-width: 400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.stat-box {
+  background: rgba(245,197,24,0.08);
+  border: 1.5px solid rgba(245,197,24,0.2);
+  border-radius: 12px;
+  padding: 20px 14px;
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: 34px;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-lbl { font-size: 11px; color: rgba(255,255,255,0.6); }
+
+/* ── FINAL CTA ── */
+.final-cta {
+  background: linear-gradient(180deg, var(--navy) 0%, #0A1228 100%);
+  padding: 64px 20px;
+  text-align: center;
+}
+.cta-tagline {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: clamp(15px, 4.5vw, 22px);
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 6px;
+}
+.cta-main {
+  font-family: 'Zen Kaku Gothic Black', sans-serif;
+  font-size: clamp(22px, 7vw, 38px);
+  color: var(--gold);
+  margin-bottom: 28px;
+  line-height: 1.3;
+  filter: drop-shadow(0 0 20px rgba(245,197,24,0.3));
+}
+.cta-jk {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  font-size: 44px;
+}
+.cta-jk span {
+  display: inline-block;
+  animation: jk-float 2.4s ease-in-out infinite;
+}
+.cta-jk span:nth-child(2) { animation-delay: 0.2s; }
+.cta-jk span:nth-child(3) { animation-delay: 0.4s; }
+
+.cta-btn-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.footer {
+  background: #070E21;
+  padding: 20px;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  line-height: 1.8;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition: none; opacity: 1; transform: none; }
+  .jk-hand, .cta-jk span { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ====== HERO ====== -->
+<section class="hero">
+  <div class="hero-eyebrow">JANKEN CEO — Complete Edition</div>
+  <div class="hero-title">
+    じゃんけん<span>社長</span>
+  </div>
+  <div class="hero-badge">完 全 版</div>
+  <p class="hero-sub">運と戦略で<em>企業帝国</em>を築け！</p>
+
+  <div class="jk-battle">
+    <div class="jk-hand">✊</div>
+    <div class="jk-vs">VS</div>
+    <div class="jk-hand">🖐️</div>
+  </div>
+
+  <p style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:24px;">
+    市場選び・人材採用・案件挑戦…すべての準備が<br>じゃんけんの勝率を変える！
+  </p>
+
+  <div class="hero-cta-wrap">
+    <a href="game.html" class="btn-store btn-ios">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      今すぐプレイする！
+    </a>
+    <a href="game.html" class="btn-store btn-android" style="background:rgba(255,255,255,0.12);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,0.3);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      ブラウザで無料プレイ
+    </a>
+  </div>
+  <p class="hero-note">インストール不要・ブラウザで今すぐ遊べる！</p>
+</section>
+
+<div class="dot-divider"></div>
+
+<!-- ====== CONCEPT STRIP ====== -->
+<div class="concept-strip">
+  <p>じゃんけんは<strong>最後の一手</strong>。<br>
+  勝率は、あなたの<strong>経営判断</strong>が積み上げるもの。</p>
+</div>
+
+<div class="dot-divider orange"></div>
+
+<!-- ====== FEATURES ====== -->
+<section class="features">
+  <div class="section-eyebrow">✦ Game Features ✦</div>
+  <h2 class="section-title">ゲームの<em>魅力</em></h2>
+
+  <div class="feature-grid">
+    <div class="feature-card reveal">
+      <span class="icon">📈</span>
+      <h3>市場を選ぶ</h3>
+      <p>IT・建設・AI・宇宙開発…10市場の景気を見極めて参入！毎20ターン変動する。</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <span class="icon">👥</span>
+      <h3>人材を採用</h3>
+      <p>N〜URまで22種以上の個性豊かな社員をガチャで獲得。スキルが戦略を変える。</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <span class="icon">📋</span>
+      <h3>案件に挑む</h3>
+      <p>小規模から国家プロジェクトまで。準備次第で勝率が大きく変わる！</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <span class="icon">✊</span>
+      <h3>じゃんけんで決める</h3>
+      <p>最後の契約はじゃんけん一発。でも勝率は経営判断が積み上げている。</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="icon">🎯</span>
+      <h3>企業理念を掲げる</h3>
+      <p>創業時に選ぶ5つの理念がゲーム全体のスタイルを決定する。</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <span class="icon">🏢</span>
+      <h3>会社を拡大する</h3>
+      <p>ワンルームから宇宙本社まで。企業価値を積み上げて帝国を作れ！</p>
+    </div>
+  </div>
+</section>
+
+<div class="dot-divider"></div>
+
+<!-- ====== HOW TO PLAY ====== -->
+<section class="howto">
+  <div class="section-eyebrow">✦ How to Play ✦</div>
+  <h2 class="section-title">遊び方は<em>シンプル</em>、<br>深さは<em>本格派</em></h2>
+
+  <div class="flow-steps">
+    <div class="flow-step reveal">
+      <div class="step-num">01</div>
+      <div class="step-body">
+        <h3>会社を設立する</h3>
+        <p>会社名・社長名・企業理念を決めて創業。理念の選択が経営スタイルを左右する。</p>
+      </div>
+    </div>
+    <div class="flow-step reveal reveal-delay-1">
+      <div class="step-num">02</div>
+      <div class="step-body">
+        <h3>市場を選び、案件を選ぶ</h3>
+        <p>どの市場が好景気か？どの規模の案件を狙うか？すべての選択が後のじゃんけんの勝率を動かす。</p>
+      </div>
+    </div>
+    <div class="flow-step reveal reveal-delay-2">
+      <div class="step-num">03</div>
+      <div class="step-body">
+        <h3>社員を採用し、育てる</h3>
+        <p>ガチャで個性豊かな社員を集めよう。スキルが発動すれば勝率はさらに伸びる。</p>
+      </div>
+    </div>
+    <div class="flow-step reveal reveal-delay-3">
+      <div class="step-num">04</div>
+      <div class="step-body">
+        <h3>じゃんけんで契約獲得！</h3>
+        <p>準備完了。✊✌️🖐️を選んで契約を勝ち取れ。勝率は画面に表示される——後は運だ！</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="dot-divider orange"></div>
+
+<!-- ====== WIN CHANCE ====== -->
+<section class="winchance-sec">
+  <div class="section-eyebrow">✦ Strategy System ✦</div>
+  <h2 class="section-title">経営判断が<em>勝率を変える</em></h2>
+
+  <div class="wc-diagram reveal">
+    <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px;text-align:center;">例：同じじゃんけんでも準備次第で…</div>
+
+    <div class="wc-row">
+      <div class="wc-label">ベース</div>
+      <div class="wc-bar-wrap"><div class="wc-bar" style="width:33%;background:rgba(255,255,255,0.2);"></div></div>
+      <div class="wc-pct" style="color:rgba(255,255,255,0.4);">33%</div>
+    </div>
+
+    <div class="wc-arrow">↓ 経営判断を積み上げると</div>
+
+    <div class="wc-row">
+      <div class="wc-label">市場(急成長)</div>
+      <div class="wc-bar-wrap"><div class="wc-bar" style="width:48%;"></div></div>
+      <div class="wc-pct">+15%</div>
+    </div>
+    <div class="wc-row">
+      <div class="wc-label">社員スキル</div>
+      <div class="wc-bar-wrap"><div class="wc-bar" style="width:28%;"></div></div>
+      <div class="wc-pct">+10%</div>
+    </div>
+    <div class="wc-row">
+      <div class="wc-label">企業評価</div>
+      <div class="wc-bar-wrap"><div class="wc-bar" style="width:20%;"></div></div>
+      <div class="wc-pct">+8%</div>
+    </div>
+    <div class="wc-row">
+      <div class="wc-label">理念ボーナス</div>
+      <div class="wc-bar-wrap"><div class="wc-bar" style="width:14%;"></div></div>
+      <div class="wc-pct">+5%</div>
+    </div>
+
+    <div class="wc-arrow">↓ 合計</div>
+
+    <div style="text-align:center;background:rgba(245,197,24,0.1);border:1.5px solid var(--gold);border-radius:10px;padding:14px;">
+      <div style="font-family:'Zen Kaku Gothic Black',sans-serif;font-size:36px;color:var(--gold);line-height:1;">71%</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;">の勝率でじゃんけんに挑める</div>
+    </div>
+  </div>
+</section>
+
+<div class="dot-divider"></div>
+
+<!-- ====== IDEOLOGY ====== -->
+<section class="ideology">
+  <div class="section-eyebrow">✦ Ideology ✦</div>
+  <h2 class="section-title"><em>企業理念</em>で<br>経営スタイルが変わる</h2>
+
+  <div class="ideology-grid">
+    <div class="ideology-card reveal">
+      <div class="icon">💰</div>
+      <div>
+        <div class="name">利益第一</div>
+        <div class="effect">案件報酬+20% / 社員満足度-10<br>とにかく稼ぎを最大化したい人向け</div>
+      </div>
+    </div>
+    <div class="ideology-card reveal reveal-delay-1">
+      <div class="icon">❤️</div>
+      <div>
+        <div class="name">社員第一</div>
+        <div class="effect">採用コスト-3pt / 満足度+20<br>チームを大切に育てる経営スタイル</div>
+      </div>
+    </div>
+    <div class="ideology-card reveal reveal-delay-2">
+      <div class="icon">⚙️</div>
+      <div>
+        <div class="name">技術重視</div>
+        <div class="effect">開発案件勝率+20% / 技術力上昇<br>イノベーションで業界を変える</div>
+      </div>
+    </div>
+    <div class="ideology-card reveal">
+      <div class="icon">🔥</div>
+      <div>
+        <div class="name">挑戦重視</div>
+        <div class="effect">大型案件出現率+50% / 損失+20%<br>リスクを取って一発逆転を狙う</div>
+      </div>
+    </div>
+    <div class="ideology-card reveal reveal-delay-1">
+      <div class="icon">🏘️</div>
+      <div>
+        <div class="name">地域密着</div>
+        <div class="effect">安定収入+400万/月 / 成長ゆっくり<br>じっくり堅実に帝国を積み上げる</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="dot-divider orange"></div>
+
+<!-- ====== MARKET & PROJECTS ====== -->
+<section class="market-sec">
+  <div class="section-eyebrow">✦ Market &amp; Projects ✦</div>
+  <h2 class="section-title">10市場×多彩な<em>案件</em></h2>
+
+  <div class="market-list">
+    <div class="market-tag hot">🤖 AI</div>
+    <div class="market-tag hot">🚀 宇宙開発</div>
+    <div class="market-tag">💻 IT</div>
+    <div class="market-tag">🏗️ 建設</div>
+    <div class="market-tag">🏥 医療</div>
+    <div class="market-tag">🎮 ゲーム</div>
+    <div class="market-tag">📚 教育</div>
+    <div class="market-tag">🏠 不動産</div>
+    <div class="market-tag">🍜 飲食</div>
+    <div class="market-tag">🎬 エンタメ</div>
+  </div>
+
+  <div class="project-cards">
+    <div class="project-item reveal">
+      <div class="pname">📝 小規模案件 <span class="badge-risk risk-low">リスク低</span></div>
+      <div class="stats"><div class="profit">+50万〜</div>勝率目安 55%</div>
+    </div>
+    <div class="project-item reveal reveal-delay-1">
+      <div class="pname">📦 中規模案件 <span class="badge-risk risk-mid">リスク中</span></div>
+      <div class="stats"><div class="profit">+150万〜</div>勝率目安 48%</div>
+    </div>
+    <div class="project-item reveal reveal-delay-2">
+      <div class="pname">🤝 大型案件 <span class="badge-risk risk-high">リスク高</span></div>
+      <div class="stats"><div class="profit">+500万〜</div>勝率目安 40%</div>
+    </div>
+    <div class="project-item reveal">
+      <div class="pname">🏛️ 国家プロジェクト <span class="badge-risk risk-max">最高</span></div>
+      <div class="stats"><div class="profit">+5000万〜</div>勝率目安 25%</div>
+    </div>
+  </div>
+</section>
+
+<div class="dot-divider"></div>
+
+<!-- ====== STAFF ====== -->
+<section class="staff-sec">
+  <div class="section-eyebrow">✦ Staff Gacha ✦</div>
+  <h2 class="section-title">22種以上の個性豊かな<em>社員たち</em></h2>
+
+  <div class="rarity-grid">
+    <div class="rarity-tag rarity-N">N</div>
+    <div class="rarity-tag rarity-R">R</div>
+    <div class="rarity-tag rarity-SR">SR</div>
+    <div class="rarity-tag rarity-SSR">SSR</div>
+    <div class="rarity-tag rarity-UR">UR</div>
+  </div>
+
+  <div class="staff-scroll">
+    <div class="staff-mini">
+      <div class="avatar">🐱</div>
+      <div class="sname">謎の猫社員</div>
+      <div class="srole">謎の存在 / UR</div>
+      <span class="skill-tag">⚡ 強運</span>
+    </div>
+    <div class="staff-mini">
+      <div class="avatar">⭐</div>
+      <div class="sname">伝説の起業家</div>
+      <div class="srole">シリアル起業家 / SSR</div>
+      <span class="skill-tag">⚡ 起業家魂</span>
+    </div>
+    <div class="staff-mini">
+      <div class="avatar">🌟</div>
+      <div class="sname">神のボケ師</div>
+      <div class="srole">伝説のボケ師 / UR</div>
+      <span class="skill-tag">⚡ 鼓舞の達人</span>
+    </div>
+    <div class="staff-mini">
+      <div class="avatar">👨‍💻</div>
+      <div class="sname">天才エンジニア鈴木</div>
+      <div class="srole">エンジニア / SR</div>
+      <span class="skill-tag">⚡ 開発エース</span>
+    </div>
+    <div class="staff-mini">
+      <div class="avatar">📢</div>
+      <div class="sname">広報の女神</div>
+      <div class="srole">広報部長 / SR</div>
+      <span class="skill-tag">⚡ 広報ブースト</span>
+    </div>
+    <div class="staff-mini">
+      <div class="avatar">🏛️</div>
+      <div class="sname">元大臣</div>
+      <div class="srole">顧問 / SSR</div>
+      <span class="skill-tag">⚡ 人脈王</span>
+    </div>
+    <div class="staff-mini">
+      <div class="avatar">👽</div>
+      <div class="sname">宇宙人インターン</div>
+      <div class="srole">インターン / SSR</div>
+      <span class="skill-tag">⚡ 市場分析</span>
+    </div>
+    <div class="staff-mini">
+      <div class="avatar">👶</div>
+      <div class="sname">新卒A田</div>
+      <div class="srole">新卒 / N</div>
+      <span class="skill-tag">⚡ 強運</span>
+    </div>
+  </div>
+  <p style="text-align:center;font-size:11px;color:rgba(255,255,255,0.35);margin-top:12px;">← スクロールして見る →</p>
+</section>
+
+<div class="dot-divider orange"></div>
+
+<!-- ====== EVENTS ====== -->
+<section class="events-sec">
+  <div class="section-eyebrow">✦ Random Events ✦</div>
+  <h2 class="section-title">ランダムイベントで<em>ドラマが起きる</em></h2>
+
+  <div class="event-list">
+    <div class="event-item reveal">
+      <div class="eicon">📈</div>
+      <div><div class="ename">投資家来訪</div><div class="edesc">株式10%を譲渡して500万の資金調達。断るか受けるかはあなた次第。</div></div>
+    </div>
+    <div class="event-item reveal reveal-delay-1">
+      <div class="eicon">🤖</div>
+      <div><div class="ename">AIツール導入提案</div><div class="edesc">導入で技術力+20。見送れば社員の士気が下がる。</div></div>
+    </div>
+    <div class="event-item reveal reveal-delay-2">
+      <div class="eicon">🔥</div>
+      <div><div class="ename">SNS炎上！</div><div class="edesc">謝罪すれば信頼度は下がるが知名度は上がる。沈黙は最悪の選択かも。</div></div>
+    </div>
+    <div class="event-item reveal">
+      <div class="eicon">⚔️</div>
+      <div><div class="ename">ライバル企業出現</div><div class="edesc">競合が同じ市場に参入。広告強化か、様子見か。</div></div>
+    </div>
+    <div class="event-item reveal reveal-delay-1">
+      <div class="eicon">📉</div>
+      <div><div class="ename">世界的不況</div><div class="edesc">全業界が低迷。リストラで資金を守るか、耐えて信頼を積むか。</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="dot-divider"></div>
+
+<!-- ====== OFFICE EVOLUTION ====== -->
+<section class="office-sec">
+  <div class="section-eyebrow">✦ Office Evolution ✦</div>
+  <h2 class="section-title">オフィスは<em>どこまでも進化する</em></h2>
+
+  <div class="office-flow">
+    <div class="office-stage reveal">
+      <div class="oicon">🏠</div>
+      <div class="olabel">ワン<br>ルーム</div>
+    </div>
+    <div class="office-arrow">→</div>
+    <div class="office-stage reveal reveal-delay-1">
+      <div class="oicon">🏢</div>
+      <div class="olabel">小規模<br>事務所</div>
+    </div>
+    <div class="office-arrow">→</div>
+    <div class="office-stage reveal reveal-delay-2">
+      <div class="oicon">🏬</div>
+      <div class="olabel">スタート<br>アップ</div>
+    </div>
+    <div class="office-arrow">→</div>
+    <div class="office-stage reveal">
+      <div class="oicon">🏗️</div>
+      <div class="olabel">自社<br>ビル</div>
+    </div>
+    <div class="office-arrow">→</div>
+    <div class="office-stage reveal reveal-delay-1">
+      <div class="oicon">🌆</div>
+      <div class="olabel">本社<br>タワー</div>
+    </div>
+    <div class="office-arrow">→</div>
+    <div class="office-stage reveal reveal-delay-2">
+      <div class="oicon">🚀</div>
+      <div class="olabel">宇宙<br>本社</div>
+    </div>
+  </div>
+</section>
+
+<div class="dot-divider orange"></div>
+
+<!-- ====== STATS ====== -->
+<section class="stats-sec">
+  <div class="section-eyebrow">✦ Game Scale ✦</div>
+  <h2 class="section-title" style="margin-bottom:24px;">このゲームの<em>スケール</em></h2>
+
+  <div class="stats-grid">
+    <div class="stat-box reveal">
+      <div class="stat-num">10</div>
+      <div class="stat-lbl">参入可能な市場数</div>
+    </div>
+    <div class="stat-box reveal reveal-delay-1">
+      <div class="stat-num">22+</div>
+      <div class="stat-lbl">採用可能な社員種類</div>
+    </div>
+    <div class="stat-box reveal reveal-delay-2">
+      <div class="stat-num">5</div>
+      <div class="stat-lbl">企業理念の選択肢</div>
+    </div>
+    <div class="stat-box reveal">
+      <div class="stat-num">8+</div>
+      <div class="stat-lbl">ランダムイベント</div>
+    </div>
+  </div>
+</section>
+
+<div class="dot-divider"></div>
+
+<!-- ====== FINAL CTA ====== -->
+<section class="final-cta">
+  <div class="cta-tagline">君の選択が、世界を変える。</div>
+  <div class="cta-main">じゃんけんで始まり、<br>気づいたら<br>企業帝国を育てているゲーム。</div>
+
+  <div class="cta-jk">
+    <span>✊</span>
+    <span>✌️</span>
+    <span>🖐️</span>
+  </div>
+
+  <div class="cta-btn-wrap">
+    <a href="game.html" class="btn-store btn-ios" style="font-size:16px;padding:16px 32px;width:280px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      今すぐプレイする！
+    </a>
+    <a href="game.html" class="btn-store btn-android" style="background:rgba(255,255,255,0.12);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,0.3);width:280px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      ブラウザで無料プレイ
+    </a>
+  </div>
+
+  <p style="font-size:11px;color:rgba(255,255,255,0.3);">インストール不要・ブラウザで今すぐ遊べる！</p>
+</section>
+
+<!-- ====== FOOTER ====== -->
+<footer class="footer">
+  <div>じゃんけん社長 完全版</div>
+  <div>© 2026 じゃんけん社長開発チーム</div>
+  <div style="margin-top:8px;">
+    <a href="#" style="color:rgba(255,255,255,0.3);text-decoration:none;margin:0 8px;">プライバシーポリシー</a>
+    <a href="#" style="color:rgba(255,255,255,0.3);text-decoration:none;margin:0 8px;">利用規約</a>
+    <a href="#" style="color:rgba(255,255,255,0.3);text-decoration:none;margin:0 8px;">お問い合わせ</a>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
